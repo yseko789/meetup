@@ -1,7 +1,4 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-
 
 const VendorSchema = new mongoose.Schema({
     name:{
@@ -27,11 +24,11 @@ const VendorSchema = new mongoose.Schema({
     },
     time:{
         type: Date,
-        required: true
+        required: [true, 'Please provide a time.']
     },
     location:{
         type: String,
-        required: true
+        required: [true, 'Please provide a location.']
     },
     createdBy:{
         type: mongoose.Types.ObjectId,
@@ -40,18 +37,5 @@ const VendorSchema = new mongoose.Schema({
     }
 })
 
-UserSchema.pre('save', async function(next){
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt)
-})
 
-UserSchema.methods.createJWT = function(){
-    return jwt.sign({userId: this._id, username: this.username}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_LIFETIME});
-}
-
-UserSchema.methods.comparePassword = async function(typedPassword){
-    const isMatch = await bcrypt.compare(typedPassword, this.password);
-    return isMatch
-}
-
-module.exports = mongoose.model('User', UserSchema)
+module.exports = mongoose.model('Vendor', VendorSchema)
