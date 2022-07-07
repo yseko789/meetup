@@ -2,7 +2,16 @@ const Vendor = require('../models/Vendor')
 const User = require('../models/User')
 const {StatusCodes} = require('http-status-codes')
 
+const getVendor = async(req, res)=>{
+    const vendor = await Vendor.findById(
+        req.params.id
+    )
 
+    if(!vendor){
+        throw new Error('Vendor does not exist.')
+    }
+    res.status(StatusCodes.OK).json(vendor)
+}
 
 const updateVendor = async(req, res)=>{
     const vendor = await Vendor.findByIdAndUpdate(
@@ -25,11 +34,14 @@ const updateVendor = async(req, res)=>{
 
 const getAllVendors = async(req, res)=>{
     const vendors = await Vendor.find()
-    res.status(StatusCodes.OK).json(vendors)
+    console.log('connected')
+    res.status(StatusCodes.OK).json({vendors})
+    
 }
 
 module.exports = 
 {
+    getVendor,
     updateVendor,
     getAllVendors
 }

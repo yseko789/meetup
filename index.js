@@ -21,8 +21,9 @@ app.use(express.json())
 app.use('/auth', authRouter)
 app.use('/account',authenticateUser, accountRouter)
 app.use('/vendor', authenticateUser, vendorRouter)
+// app.use('/vendor', vendorRouter)
 
-const port = 3000
+const port = 3001
 
 const start = async()=>{
     try{
