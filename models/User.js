@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema({
         required: [true, 'Please provide a password.'],
         minlength: 6
     },
-    vendors: [{type: mongoose.Types.ObjectId, ref: 'Vendor'}]
+    vendors: [{type: mongoose.Types.ObjectId, ref: 'Vendor'}],
 })
 
 UserSchema.pre('save', async function(next){
