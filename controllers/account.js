@@ -20,7 +20,7 @@ const updateUser = async(req, res)=>{
 }
 
 const createMyVendor = async(req, res)=>{
-    const {body:{name, peopleCurrent, peopleNeeded, description, time, location}, user:{userId}} = req
+    const {body:{name, peopleCurrent, peopleNeeded, description, time, location}, user:{userId, username}} = req
 
     if(name === "" || 
     (peopleCurrent==0||peopleCurrent>peopleNeeded)||
@@ -30,7 +30,8 @@ const createMyVendor = async(req, res)=>{
     location === ""){
         throw new Error('Missing field(s).')
     }
-    req.body.createdBy = req.user.userId
+    req.body.createdById = userId
+    req.body.createdByUsername = username
     const vendor = await Vendor.create(req.body)
     const user = await User.findByIdAndUpdate(
         userId, 

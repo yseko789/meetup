@@ -3,6 +3,8 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 
+const Message = require('./models/Message')
+const Vendor = require('./models/Vendor')
 
 //setup socket.io
 const http = require('http')
@@ -19,9 +21,27 @@ const io = new Server(server, {
 })
 
 io.on("connection",(socket)=>{
-    console.log(`User Connected: ${socket.id}`)
-    socket.on("send_message", (data)=>{
-        socket.broadcast.emit("receive_message",data)
+    // when a socket connects to the server (enters chat room), past messages are sent
+    socket.on('join-room', async (data)=>{
+        socket.join(data)
+        const vendorMessagesId = await Vendor.findById(data).select('messages')
+        const vendorMessages = await Message.find().where('_id').in(vendorMessagesId.messages)
+        if(vendorMessages.length>0){
+            socket.emit('past-messages', vendorMessages)
+        }
+    
+    })
+
+    
+
+    socket.on("send-message", async (data)=>{
+        io.in(data.room).emit("receive-message",data.message)
+        const newMessage = await Message.create(data.message)
+        const vendor = await Vendor.findByIdAndUpdate(
+            data.room, 
+            {$push:{"messages":newMessage}},
+            {new:true}
+        )
     })
 })
 

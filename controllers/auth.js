@@ -6,7 +6,7 @@ const register = async(req,res)=>{
     const newUser = await User.create(req.body)
     const token = newUser.createJWT()
     console.log("success")
-    res.status(StatusCodes.CREATED).json({username: newUser.username, token})
+    res.status(StatusCodes.CREATED).json({username: newUser.username, userId: newUser._id,token})
 }
 
 const login = async(req,res)=>{
@@ -23,7 +23,7 @@ const login = async(req,res)=>{
     }
     if(await user.comparePassword(password)){
         const token = user.createJWT();
-        res.status(StatusCodes.OK).json({username: user.username, token})
+        res.status(StatusCodes.OK).json({username: user.username, userId: user._id,token})
     }else{
         throw new Error('Wrong password.')
     }

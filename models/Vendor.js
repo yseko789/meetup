@@ -30,11 +30,16 @@ const VendorSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide a location.']
     },
-    createdBy:{
+    createdByUsername:{
+        type: String,
+        required: [true, 'Please provide a username.']
+    },
+    createdById:{
         type: mongoose.Types.ObjectId,
         ref: 'User',
-        required: [true, 'Please provide the user.']
-    }
+        required: [true, 'Please provide the user ID.']
+    },
+    messages: [{type: mongoose.Types.ObjectId, ref: 'Message'}]
 })
 
 
