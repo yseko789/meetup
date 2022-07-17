@@ -26,6 +26,7 @@ const getVendor = async(req, res)=>{
 }
 
 const updateVendor = async(req, res)=>{
+    let userStatus = ""
     const vendor = await Vendor.findByIdAndUpdate(
         req.params.id,
         req.body.vendorInfo,
@@ -36,22 +37,33 @@ const updateVendor = async(req, res)=>{
     }
 
     //have to change this depending on whether 'attendee' or 'none'
-    if(vendor.createdBy!=req.user.userId){
+    if(vendor.createdById!=req.user.userId){
+        
         if(req.body.userStatus === "none"){
             const user = await User.findByIdAndUpdate(
                 req.user.userId,
                 {$push: {"vendors":vendor}},
                 {new:true}
             )
+            userStatus = "attendee"
         }else if(req.body.userStatus === "attendee"){
-            const user = await User.findByIdAndUpdate(
-                req.user.userId, 
-                {$pull: {"vendors": vendor}},
-                {safe: true, multi:false}
-            )
+            console.log(req.user.userId)
+            console.log(req.user.username)
+            try{
+                const user = await User.findByIdAndUpdate(
+                    req.user.userId, 
+                    {$pull: {vendors: req.params.id}},
+                    {safe: true, multi:false, new: true}
+                )
+                console.log(user.username)
+                console.log(user._id)
+            }catch(error){
+                console.log(error)
+            }
+            userStatus="none"
         }
     }
-    res.status(StatusCodes.OK).json(vendor)
+    res.status(StatusCodes.OK).json({vendor,userStatus})
 }
 
 const getAllVendors = async(req, res)=>{

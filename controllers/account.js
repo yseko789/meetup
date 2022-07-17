@@ -23,8 +23,8 @@ const createMyVendor = async(req, res)=>{
     const {body:{name, peopleCurrent, peopleNeeded, description, time, location}, user:{userId, username}} = req
 
     if(name === "" || 
-    (peopleCurrent==0||peopleCurrent>peopleNeeded)||
-    peopleNeeded <2||
+    (Number(peopleCurrent)===0|| (Number(peopleCurrent)>Number(peopleNeeded)))||
+    Number(peopleNeeded) <2||
     description === "" ||
     !time||
     location === ""){
